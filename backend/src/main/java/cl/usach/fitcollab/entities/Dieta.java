@@ -9,7 +9,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 @Table(name = "dietas")
@@ -26,9 +30,15 @@ public class Dieta {
     @ElementCollection
     private List<String> alimentosExcluidos = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "deportista_id")
+    private Deportista deportista;
+
     private LocalDateTime fechaCreacion;
 
-    private Long creadorId;
+    @ManyToOne
+    @JoinColumn(name = "creador_id")
+    private Nutricionista creador;
 
     private String sugerenciaAlimenticia;
 
@@ -83,12 +93,12 @@ public class Dieta {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public Long getCreadorId() {
-        return creadorId;
+    public Nutricionista getCreador() {
+        return creador;
     }
 
-    public void setCreadorId(Long creadorId) {
-        this.creadorId = creadorId;
+    public void setCreador(Nutricionista creador) {
+        this.creador = creador;
     }
 
     public String getSugerenciaAlimenticia() {
@@ -97,5 +107,13 @@ public class Dieta {
 
     public void setSugerenciaAlimenticia(String sugerenciaAlimenticia) {
         this.sugerenciaAlimenticia = sugerenciaAlimenticia;
+    }
+
+    public Deportista getDeportista() {
+    return deportista;
+    }
+
+    public void setDeportista(Deportista deportista) {
+        this.deportista = deportista;
     }
 }

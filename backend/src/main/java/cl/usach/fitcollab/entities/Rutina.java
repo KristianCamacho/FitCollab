@@ -9,8 +9,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import cl.usach.fitcollab.enums.EstadoRutina;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 @Table(name = "rutinas")
@@ -24,10 +31,17 @@ public class Rutina {
     private String descripcion;
     private int duracionMinutos;
     private int intensidad;
-    private String estado;
+    @Enumerated(EnumType.STRING)
+    private EstadoRutina estado;
     private LocalDateTime fechaCreacion;
 
-    private Long creadorId;
+    @ManyToOne
+    @JoinColumn(name = "creador_id")
+    private Entrenador creador;
+
+    @ManyToOne
+    @JoinColumn(name = "deportista_id")
+    private Deportista deportista;
 
     private int calificacion;
     private int disponibilidadTiempo;
@@ -79,11 +93,11 @@ public class Rutina {
         this.intensidad = intensidad;
     }
 
-    public String getEstado() {
+    public EstadoRutina  getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoRutina estado) {
         this.estado = estado;
     }
 
@@ -95,12 +109,12 @@ public class Rutina {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public Long getCreadorId() {
-        return creadorId;
+    public Entrenador getCreador() {
+        return creador;
     }
 
-    public void setCreadorId(Long creadorId) {
-        this.creadorId = creadorId;
+    public void setCreador(Entrenador creador) {
+        this.creador = creador;
     }
 
     public int getCalificacion() {
@@ -133,5 +147,13 @@ public class Rutina {
 
     public void setEjercicios(List<Ejercicio> ejercicios) {
         this.ejercicios = ejercicios;
+    }
+
+    public Deportista getDeportista() {
+    return deportista;
+    }
+
+    public void setDeportista(Deportista deportista) {
+        this.deportista = deportista;
     }
 }

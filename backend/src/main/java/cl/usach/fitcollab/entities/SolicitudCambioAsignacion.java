@@ -3,7 +3,6 @@ package cl.usach.fitcollab.entities;
 import java.time.LocalDateTime;
 
 import cl.usach.fitcollab.enums.EstadoSolicitud;
-import cl.usach.fitcollab.enums.TipoSolicitud;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,15 +14,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "solicitudes_modificacion")
-public class SolicitudModificacion {
+@Table(name = "solicitudes_cambio_asignacion")
+public class SolicitudCambioAsignacion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Enumerated(EnumType.STRING)
-    private TipoSolicitud tipo;
 
     @Enumerated(EnumType.STRING)
     private EstadoSolicitud estado;
@@ -36,19 +32,7 @@ public class SolicitudModificacion {
     @JoinColumn(name = "deportista_id", nullable = false)
     private Deportista deportista;
 
-    @ManyToOne
-    @JoinColumn(name = "especialista_id")
-    private Especialista especialista;
-
-    @ManyToOne
-    @JoinColumn(name = "rutina_id")
-    private Rutina rutina;
-
-    @ManyToOne
-    @JoinColumn(name = "dieta_id")
-    private Dieta dieta;
-
-    public SolicitudModificacion() {
+    public SolicitudCambioAsignacion() {
     }
 
     public Long getId() {
@@ -57,14 +41,6 @@ public class SolicitudModificacion {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public TipoSolicitud getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(TipoSolicitud tipo) {
-        this.tipo = tipo;
     }
 
     public EstadoSolicitud getEstado() {
@@ -97,29 +73,5 @@ public class SolicitudModificacion {
 
     public void setDeportista(Deportista deportista) {
         this.deportista = deportista;
-    }
-
-    public Especialista getEspecialista() {
-        return especialista;
-    }
-
-    public void setEspecialista(Especialista especialista) {
-        this.especialista = especialista;
-    }
-
-    public Rutina getRutina() {
-        return rutina;
-    }
-
-    public void setRutina(Rutina rutina) {
-        this.rutina = rutina;
-    }
-
-    public Dieta getDieta() {
-        return dieta;
-    }
-
-    public void setDieta(Dieta dieta) {
-        this.dieta = dieta;
     }
 }
