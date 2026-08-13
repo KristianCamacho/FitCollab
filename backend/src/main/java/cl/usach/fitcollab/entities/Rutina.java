@@ -16,8 +16,7 @@ import jakarta.persistence.Table;
 import cl.usach.fitcollab.enums.EstadoRutina;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+
 
 @Entity
 @Table(name = "rutinas")
