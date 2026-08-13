@@ -1,18 +1,39 @@
 package cl.usach.fitcollab.entities;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "usuarios")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Usuario {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String nombre;
+
+    @Column(nullable = false)
     private String apellido;
+
+    @Column(nullable = false, unique = true)
     private String correo;
+
+    @Column(nullable = false)
     private String contrasena;
 
     public Usuario() {
     }
 
-    public Usuario(Long id, String nombre, String apellido, String correo, String contrasena) {
-        this.id = id;
+    public Usuario(String nombre, String apellido, String correo, String contrasena) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
