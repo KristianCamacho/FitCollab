@@ -1,52 +1,85 @@
 <script setup>
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
 
 const usuario = computed(() => {
   const datos = localStorage.getItem('usuario')
-
-  if (!datos) {
-    return null
-  }
-
-  return JSON.parse(datos)
+  return datos ? JSON.parse(datos) : null
 })
-
-const cerrarSesion = () => {
-  localStorage.removeItem('usuario')
-  router.push('/login')
-}
 </script>
 
 <template>
-  <main class="inicio">
-    <h1>Inicio</h1>
+  <section class="inicio">
+    <div class="encabezado">
+      <span class="etiqueta">Inicio</span>
 
-    <div v-if="usuario">
-      <p>Bienvenido, {{ usuario.nombre }} {{ usuario.apellido }}</p>
-      <p>Rol: {{ usuario.rol }}</p>
+      <h1>
+        Bienvenido, {{ usuario?.nombre }}
+      </h1>
 
-      <RouterLink to="/perfil">
-        Completar información personal
-      </RouterLink>
-
-      <button @click="cerrarSesion">
-        Cerrar sesión
-      </button>
+      <p>
+        Desde aquí podrás acceder a las distintas funcionalidades de FitCollab.
+      </p>
     </div>
-  </main>
+
+    <div class="tarjeta">
+      <h2>Tu cuenta</h2>
+
+      <p>
+        <strong>Nombre:</strong>
+        {{ usuario?.nombre }} {{ usuario?.apellido }}
+      </p>
+
+      <p>
+        <strong>Correo:</strong>
+        {{ usuario?.correo }}
+      </p>
+
+      <p>
+        <strong>Rol:</strong>
+        {{ usuario?.rol }}
+      </p>
+    </div>
+  </section>
 </template>
 
 <style scoped>
 .inicio {
-  padding: 32px;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
-button {
-  margin-top: 16px;
-  padding: 10px 16px;
-  cursor: pointer;
+.encabezado {
+  margin-bottom: 30px;
+}
+
+.etiqueta {
+  color: var(--color-secondary);
+  font-weight: 600;
+}
+
+h1 {
+  margin: 6px 0 8px;
+  font-size: 32px;
+  color: var(--color-primary);
+}
+
+.encabezado p {
+  color: var(--color-text-secondary);
+}
+
+.tarjeta {
+  max-width: 500px;
+
+  padding: 24px;
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-card);
+}
+
+.tarjeta h2 {
+  margin-top: 0;
+  color: var(--color-primary);
 }
 </style>
