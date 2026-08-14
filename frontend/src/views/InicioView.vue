@@ -28,6 +28,10 @@ const cerrarSesion = () => {
       <p>Bienvenido, {{ usuario.nombre }} {{ usuario.apellido }}</p>
       <p>Rol: {{ usuario.rol }}</p>
 
+      <RouterLink to="/perfil">
+        Completar información personal
+      </RouterLink>
+
       <button @click="cerrarSesion">
         Cerrar sesión
       </button>

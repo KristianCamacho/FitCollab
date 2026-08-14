@@ -1,42 +1,14 @@
-package cl.usach.fitcollab.entities;
+package cl.usach.fitcollab.dto;
 
-import java.time.LocalDateTime;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name = "fichas_personales")
-public class FichaPersonal {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class FichaPersonalRequest {
 
     private Integer edad;
-
     private Double peso;
-
     private Double altura;
-
     private String objetivo;
-
     private String restriccionesAlimenticias;
 
-    private LocalDateTime fechaActualizacion;
-
-    public FichaPersonal() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public FichaPersonalRequest() {
     }
 
     public Integer getEdad() {
@@ -77,13 +49,5 @@ public class FichaPersonal {
 
     public void setRestriccionesAlimenticias(String restriccionesAlimenticias) {
         this.restriccionesAlimenticias = restriccionesAlimenticias;
-    }
-
-    public LocalDateTime getFechaActualizacion() {
-        return fechaActualizacion;
-    }
-
-    public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
-        this.fechaActualizacion = fechaActualizacion;
     }
 }
