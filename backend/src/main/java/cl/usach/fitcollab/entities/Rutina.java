@@ -3,6 +3,12 @@ package cl.usach.fitcollab.entities;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
+
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -14,6 +20,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import cl.usach.fitcollab.enums.EstadoRutina;
+import cl.usach.fitcollab.entities.Rutina;
+import cl.usach.fitcollab.repository.RutinaRepository;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 
