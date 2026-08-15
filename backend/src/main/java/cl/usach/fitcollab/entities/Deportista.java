@@ -1,17 +1,22 @@
 package cl.usach.fitcollab.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
-import jakarta.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "deportistas")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Deportista extends Usuario {
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -30,15 +35,19 @@ public class Deportista extends Usuario {
     @JoinColumn(name = "nutricionista_id")
     private Nutricionista nutricionista;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "deportista")
     private List<Rutina> rutinas = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "deportista")
     private List<Dieta> dietas = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "deportista")
     private List<SolicitudModificacion> solicitudesModificacion = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "deportista")
     private List<SolicitudCambioAsignacion> solicitudesCambioAsignacion = new ArrayList<>();
 
@@ -100,7 +109,7 @@ public class Deportista extends Usuario {
     }
 
     public List<Dieta> getDietas() {
-    return dietas;
+        return dietas;
     }
 
     public void setDietas(List<Dieta> dietas) {
@@ -118,7 +127,7 @@ public class Deportista extends Usuario {
     }
 
     public List<SolicitudModificacion> getSolicitudesModificacion() {
-    return solicitudesModificacion;
+        return solicitudesModificacion;
     }
 
     public void setSolicitudesModificacion(List<SolicitudModificacion> solicitudesModificacion) {
@@ -131,7 +140,7 @@ public class Deportista extends Usuario {
     }
 
     public List<SolicitudCambioAsignacion> getSolicitudesCambioAsignacion() {
-    return solicitudesCambioAsignacion;
+        return solicitudesCambioAsignacion;
     }
 
     public void setSolicitudesCambioAsignacion(

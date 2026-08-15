@@ -1,5 +1,6 @@
 package cl.usach.fitcollab.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,6 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "ejercicios")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Ejercicio {
 
     @Id
