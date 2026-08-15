@@ -15,4 +15,8 @@ public interface SolicitudModificacionRepository
     List<SolicitudModificacion> findByEspecialistaId(Long especialistaId);
 
     List<SolicitudModificacion> findByEstado(EstadoSolicitud estado);
+
+    boolean existsByDeportistaIdAndTipoAndEstado(Long deportistaId, String tipo, EstadoSolicitud estado);
+
+    List<SolicitudModificacion> findByTipoAndEstado(String tipo, EstadoSolicitud estado);
 }
