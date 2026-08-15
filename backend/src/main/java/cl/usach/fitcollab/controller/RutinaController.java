@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cl.usach.fitcollab.dto.CalificarRutinaRequest;
+import cl.usach.fitcollab.dto.RutinaResponse;
 import cl.usach.fitcollab.entities.Rutina;
 import cl.usach.fitcollab.services.RutinaService;
 import jakarta.validation.Valid;
@@ -28,17 +29,19 @@ public class RutinaController {
     }
 
     @GetMapping
-    public List<Rutina> listar() {
-        return rutinaService.obtenerTodas();
+    public List<RutinaResponse> listar() {
+        return rutinaService.obtenerTodas()
+                .stream()
+                .map(RutinaResponse::new)
+                .toList();
     }
 
-    // CU-06: Calificar rutina
     @PostMapping("/{id}/calificacion")
-    public ResponseEntity<Rutina> calificar(
+    public ResponseEntity<RutinaResponse> calificar(
             @PathVariable Long id,
             @Valid @RequestBody CalificarRutinaRequest request) {
 
         Rutina rutinaCalificada = rutinaService.calificarRutina(id, request.getCalificacion());
-        return ResponseEntity.ok(rutinaCalificada);
+        return ResponseEntity.ok(new RutinaResponse(rutinaCalificada));
     }
 }
