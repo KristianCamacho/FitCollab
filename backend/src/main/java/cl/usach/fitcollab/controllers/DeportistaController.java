@@ -1,4 +1,4 @@
-package cl.usach.fitcollab.controller;
+package cl.usach.fitcollab.controllers;
 
 import java.util.Optional;
 

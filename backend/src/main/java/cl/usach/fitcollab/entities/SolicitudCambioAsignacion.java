@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -31,6 +32,12 @@ public class SolicitudCambioAsignacion {
     @ManyToOne
     @JoinColumn(name = "deportista_id", nullable = false)
     private Deportista deportista;
+
+    @Column(name = "justificacion_rechazo", length = 500)
+    private String justificacionRechazo;
+
+    @Column(name = "tipo_especialista")
+    private String tipoEspecialista;
 
     public SolicitudCambioAsignacion() {
     }
@@ -74,4 +81,13 @@ public class SolicitudCambioAsignacion {
     public void setDeportista(Deportista deportista) {
         this.deportista = deportista;
     }
+
+    public String getJustificacionRechazo() { return justificacionRechazo; }
+
+    public void setJustificacionRechazo(String justificacionRechazo) { this.justificacionRechazo = justificacionRechazo; }
+
+    public String getTipoEspecialista() { return tipoEspecialista; }
+
+    public void setTipoEspecialista(String tipoEspecialista) { this.tipoEspecialista = tipoEspecialista; }
+
 }
