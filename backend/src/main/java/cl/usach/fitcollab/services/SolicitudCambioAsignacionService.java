@@ -6,24 +6,33 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import cl.usach.fitcollab.entities.Deportista;
-import cl.usach.fitcollab.entities.SolicitudCambioAsignacion;
+import cl.usach.fitcollab.entities.*;
 import cl.usach.fitcollab.enums.EstadoSolicitud;
-import cl.usach.fitcollab.repository.DeportistaRepository;
-import cl.usach.fitcollab.repository.SolicitudCambioAsignacionRepository;
+import cl.usach.fitcollab.repository.*;
 
 @Service
 public class SolicitudCambioAsignacionService {
 
     private final SolicitudCambioAsignacionRepository solicitudCambioAsignacionRepository;
-
     private final DeportistaRepository deportistaRepository;
+    private final EntrenadorRepository entrenadorRepository;
+    private final NutricionistaRepository nutricionistaRepository;
+    private final NotificacionRepository notificacionRepository;
+    private final UsuarioRepository usuarioRepository;
 
     public SolicitudCambioAsignacionService(
             SolicitudCambioAsignacionRepository solicitudCambioAsignacionRepository,
-            DeportistaRepository deportistaRepository) {
+            DeportistaRepository deportistaRepository,
+            EntrenadorRepository entrenadorRepository,
+            NutricionistaRepository nutricionistaRepository,
+            NotificacionRepository notificacionRepository,
+            UsuarioRepository usuarioRepository) {
         this.solicitudCambioAsignacionRepository = solicitudCambioAsignacionRepository;
         this.deportistaRepository = deportistaRepository;
+        this.entrenadorRepository = entrenadorRepository;
+        this.nutricionistaRepository = nutricionistaRepository;
+        this.notificacionRepository = notificacionRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
     public List<SolicitudCambioAsignacion> obtenerTodas() {
@@ -67,10 +76,74 @@ public class SolicitudCambioAsignacionService {
         // SE GUARDA EN LA BD
         SolicitudCambioAsignacion guardada = solicitudCambioAsignacionRepository.save(nuevaSolicitud);
 
-        /// /////////////////////////////
-        //FALTA LA NOTIFICACION AL ADMIN
-        /// /////////////////////////////
+        //NOTIFICACION AL ADMIN
+        usuarioRepository.findAll().stream()
+                .filter(u -> u instanceof Administrador)
+                .findFirst()
+                .ifPresent(admin -> enviarNotificacion(admin, "Nueva solicitud de cambio de " + tipoEspecialista.toLowerCase() + " del deportista " + deportista.getNombre() + "."));
 
         return guardada;
     }
+
+    //AQUI EMPIEZA EL CU-15
+
+    public List<SolicitudCambioAsignacion> obtenerSolicitudesPendientes() {
+        return solicitudCambioAsignacionRepository.findByEstado(EstadoSolicitud.PENDIENTE);
+    }
+
+    public SolicitudCambioAsignacion responderSolicitudCambio(Long solicitudId, boolean aceptada, Long nuevoEspecialistaId, String justificacionRechazo) {
+
+        SolicitudCambioAsignacion solicitud = solicitudCambioAsignacionRepository.findById(solicitudId)
+                .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
+
+        Deportista deportista = solicitud.getDeportista();
+        Usuario profesionalAntiguo = solicitud.getTipoEspecialista().equalsIgnoreCase("ENTRENADOR") ? deportista.getEntrenador() : deportista.getNutricionista();
+
+        if (aceptada) {
+            solicitud.setEstado(EstadoSolicitud.ACEPTADA);
+            Usuario nuevoProfesional = null;
+
+           //ACA SE CAMBIA AL ESPECIALISTA
+            if (solicitud.getTipoEspecialista().equalsIgnoreCase("ENTRENADOR")) {
+                Entrenador nuevoEntrenador = entrenadorRepository.findById(nuevoEspecialistaId).orElseThrow(() -> new RuntimeException("Entrenador no encontrado"));
+                deportista.setEntrenador(nuevoEntrenador);
+                nuevoProfesional = nuevoEntrenador;
+            } else {
+                Nutricionista nuevoNutricionista = nutricionistaRepository.findById(nuevoEspecialistaId).orElseThrow(() -> new RuntimeException("Nutricionista no encontrado"));
+                deportista.setNutricionista(nuevoNutricionista);
+                nuevoProfesional = nuevoNutricionista;
+            }
+            deportistaRepository.save(deportista);
+
+            enviarNotificacion(deportista, "Tu solicitud fue aceptada. Tu nuevo " + solicitud.getTipoEspecialista().toLowerCase() + " es " + nuevoProfesional.getNombre() + ".");
+            enviarNotificacion(nuevoProfesional, "Tienes un nuevo deportista asignado: " + deportista.getNombre() + ".");
+            if (profesionalAntiguo != null) {
+                enviarNotificacion(profesionalAntiguo, "El deportista " + deportista.getNombre() + " fue reasignado.");
+            }
+
+        } else {
+            if (justificacionRechazo == null || justificacionRechazo.trim().isEmpty()) {
+                throw new IllegalArgumentException("Se debe ingresar una justificación para el rechazo.");
+            }
+
+            solicitud.setEstado(EstadoSolicitud.RECHAZADA);
+            solicitud.setJustificacionRechazo(justificacionRechazo);
+
+            enviarNotificacion(deportista, "Tu solicitud de cambio fue rechazada. Motivo: " + justificacionRechazo);
+        }
+
+        return solicitudCambioAsignacionRepository.save(solicitud);
+    }
+
+    private void enviarNotificacion(Usuario destinatario, String mensaje) {
+        Notificacion notificacion = new Notificacion();
+        notificacion.setMensaje(mensaje);
+        notificacion.setFechaHora(LocalDateTime.now());
+        notificacion.setDestinatario(destinatario);
+        notificacionRepository.save(notificacion);
+    }
+
+    public List<Entrenador> obtenerEntrenadoresDisponibles() { return entrenadorRepository.findAll(); }
+    public List<Nutricionista> obtenerNutricionistasDisponibles() { return nutricionistaRepository.findAll(); }
 }
+

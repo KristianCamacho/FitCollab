@@ -1,15 +1,12 @@
 package cl.usach.fitcollab.controller;
 
 import java.util.Map;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import cl.usach.fitcollab.entities.SolicitudCambioAsignacion;
+import cl.usach.fitcollab.entities.*;
 import cl.usach.fitcollab.services.SolicitudCambioAsignacionService;
 
 @RestController
@@ -39,6 +36,38 @@ public class SolicitudCambioAsignacionController {
         } catch (Exception e) {
             // ERROR 500 PARA OTROS
             return ResponseEntity.internalServerError().body("Ocurrió un error al procesar la solicitud.");
+        }
+    }
+
+    @GetMapping("/pendientes")
+    public ResponseEntity<List<SolicitudCambioAsignacion>> listarPendientes() {
+        return ResponseEntity.ok(solicitudService.obtenerSolicitudesPendientes());
+    }
+
+    @GetMapping("/entrenadores")
+    public ResponseEntity<List<Entrenador>> listarEntrenadores() {
+        return ResponseEntity.ok(solicitudService.obtenerEntrenadoresDisponibles());
+    }
+
+    @GetMapping("/nutricionistas")
+    public ResponseEntity<List<Nutricionista>> listarNutricionistas() {
+        return ResponseEntity.ok(solicitudService.obtenerNutricionistasDisponibles());
+    }
+
+    @PutMapping("/{id}/responder")
+    public ResponseEntity<?> responderSolicitud(@PathVariable Long id, @RequestBody Map<String, Object> payload) {
+        try {
+            boolean aceptada = (Boolean) payload.get("aceptada");
+            Long nuevoEspecialistaId = payload.containsKey("nuevoEspecialistaId") && payload.get("nuevoEspecialistaId") != null
+                    ? Long.parseLong(payload.get("nuevoEspecialistaId").toString()) : null;
+            String justificacion = (String) payload.get("justificacionRechazo");
+
+            SolicitudCambioAsignacion procesada = solicitudService.responderSolicitudCambio(id, aceptada, nuevoEspecialistaId, justificacion);
+            return ResponseEntity.ok(procesada);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Ocurrió un error al procesar la respuesta.");
         }
     }
 }
