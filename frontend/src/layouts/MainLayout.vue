@@ -36,6 +36,14 @@ const cerrarSesion = () => {
         <RouterLink to="/perfil">
           Perfil
         </RouterLink>
+
+        <RouterLink v-if="usuario && usuario.rol === 'DEPORTISTA'" to="/mi-especialista">
+          Mi Equipo Profesional
+        </RouterLink>
+
+        <RouterLink v-if="usuario && usuario.rol === 'ADMINISTRADOR'" to="/admin/solicitudes">
+          Solicitudes de Cambio
+        </RouterLink>
       </nav>
 
       <div class="usuario" v-if="usuario">
