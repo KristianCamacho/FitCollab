@@ -4,6 +4,8 @@ import LoginView from '../views/LoginView.vue'
 import InicioView from '../views/InicioView.vue'
 import PerfilView from '../views/PerfilView.vue'
 import MainLayout from '../layouts/MainLayout.vue'
+import MiEspecialistaView from '../views/MiEspecialistaView.vue'
+import SolicitudesPendientesView from '../views/SolicitudesPendientesView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,6 +39,16 @@ const router = createRouter({
           name: 'perfil',
           component: PerfilView,
         },
+        {
+      path: 'mi-especialista',
+      name: 'mi-especialista',
+      component: MiEspecialistaView
+    },
+    {
+      path: 'admin/solicitudes',
+      name: 'admin-solicitudes',
+      component: SolicitudesPendientesView
+    }
       ],
     },
   ],
