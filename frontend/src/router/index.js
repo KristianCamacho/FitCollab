@@ -4,6 +4,10 @@ import LoginView from '../views/LoginView.vue'
 import InicioView from '../views/InicioView.vue'
 import PerfilView from '../views/PerfilView.vue'
 import MainLayout from '../layouts/MainLayout.vue'
+import CrearDietaView from '../views/nutricionista/CrearDietaView.vue'
+import SolicitudesView from '../views/nutricionista/SolicitudesView.vue'
+import DietasView from '../views/nutricionista/DietasView.vue'
+import SolicitudDietaView from '../views/deportista/SolicitudDietaView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -36,6 +40,26 @@ const router = createRouter({
           path: 'perfil',
           name: 'perfil',
           component: PerfilView,
+        },
+        {
+        path: 'nutricionista/dietas/crear',
+        name: 'crear-dieta',
+        component: CrearDietaView,
+        },
+        {
+        path: 'nutricionista/solicitudes',
+        name: 'solicitudes-dieta',
+        component: SolicitudesView,
+        },
+        {
+        path: 'nutricionista/dietas',
+        name: 'dietas',
+        component: DietasView,
+        },
+        {
+        path: 'deportista/solicitud-dieta',
+        name: 'solicitud-dieta',
+        component: SolicitudDietaView,
         },
       ],
     },

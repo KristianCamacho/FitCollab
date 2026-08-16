@@ -36,6 +36,26 @@ const cerrarSesion = () => {
         <RouterLink to="/perfil">
           Perfil
         </RouterLink>
+
+         <!-- LINKS PARA NUTRICIONISTA -->
+         <template v-if="usuario?.rol === 'NUTRICIONISTA'">
+          <RouterLink to="/nutricionista/dietas">
+            Mis planes alimenticios
+          </RouterLink>
+          <RouterLink to="/nutricionista/dietas/crear">
+            Crear plan alimenticio
+          </RouterLink>
+          <RouterLink to="/nutricionista/solicitudes">
+            Solicitudes pendientes
+          </RouterLink>
+          </template>
+
+          <!-- LINKS PARA DEPORTISTA -->
+          <template v-if="usuario?.rol === 'DEPORTISTA'">
+          <RouterLink to="/deportista/solicitud-dieta">
+            Solicitar cambio de dieta
+          </RouterLink>
+          </template>
       </nav>
 
       <div class="usuario" v-if="usuario">
