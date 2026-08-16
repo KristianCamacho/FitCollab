@@ -1,4 +1,4 @@
-package cl.usach.fitcollab.controllers;
+package cl.usach.fitcollab.controller;
 
 import java.util.Map;
 
