@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import CalificarRutinaView from '../views/CalificarRutinaView.vue'
 
 import LoginView from '../views/LoginView.vue'
 import InicioView from '../views/InicioView.vue'
@@ -36,6 +37,11 @@ const router = createRouter({
           path: 'perfil',
           name: 'perfil',
           component: PerfilView,
+        },
+         {
+          path: 'calificar-rutina',
+          name: 'calificar-rutina',
+          component: CalificarRutinaView,
         },
       ],
     },
