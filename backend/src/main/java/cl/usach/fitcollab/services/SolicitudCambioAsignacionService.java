@@ -97,28 +97,28 @@ public class SolicitudCambioAsignacionService {
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
 
         Deportista deportista = solicitud.getDeportista();
-        Usuario profesionalAntiguo = solicitud.getTipoEspecialista().equalsIgnoreCase("ENTRENADOR") ? deportista.getEntrenador() : deportista.getNutricionista();
+        Usuario especialistaAntiguo = solicitud.getTipoEspecialista().equalsIgnoreCase("ENTRENADOR") ? deportista.getEntrenador() : deportista.getNutricionista();
 
         if (aceptada) {
             solicitud.setEstado(EstadoSolicitud.ACEPTADA);
-            Usuario nuevoProfesional = null;
+            Usuario nuevoEspecialista = null;
 
            //ACA SE CAMBIA AL ESPECIALISTA
             if (solicitud.getTipoEspecialista().equalsIgnoreCase("ENTRENADOR")) {
                 Entrenador nuevoEntrenador = entrenadorRepository.findById(nuevoEspecialistaId).orElseThrow(() -> new RuntimeException("Entrenador no encontrado"));
                 deportista.setEntrenador(nuevoEntrenador);
-                nuevoProfesional = nuevoEntrenador;
+                nuevoEspecialista = nuevoEntrenador;
             } else {
                 Nutricionista nuevoNutricionista = nutricionistaRepository.findById(nuevoEspecialistaId).orElseThrow(() -> new RuntimeException("Nutricionista no encontrado"));
                 deportista.setNutricionista(nuevoNutricionista);
-                nuevoProfesional = nuevoNutricionista;
+                nuevoEspecialista = nuevoNutricionista;
             }
             deportistaRepository.save(deportista);
 
-            enviarNotificacion(deportista, "Tu solicitud fue aceptada. Tu nuevo " + solicitud.getTipoEspecialista().toLowerCase() + " es " + nuevoProfesional.getNombre() + ".");
-            enviarNotificacion(nuevoProfesional, "Tienes un nuevo deportista asignado: " + deportista.getNombre() + ".");
-            if (profesionalAntiguo != null) {
-                enviarNotificacion(profesionalAntiguo, "El deportista " + deportista.getNombre() + " fue reasignado.");
+            enviarNotificacion(deportista, "Tu solicitud fue aceptada. Tu nuevo " + solicitud.getTipoEspecialista().toLowerCase() + " es " + nuevoEspecialista.getNombre() + ".");
+            enviarNotificacion(nuevoEspecialista, "Tienes un nuevo deportista asignado: " + deportista.getNombre() + ".");
+            if (especialistaAntiguo != null) {
+                enviarNotificacion(especialistaAntiguo, "El deportista " + deportista.getNombre() + " fue reasignado.");
             }
 
         } else {
@@ -142,7 +142,7 @@ public class SolicitudCambioAsignacionService {
         notificacion.setDestinatario(destinatario);
         notificacionRepository.save(notificacion);
     }
-
+    
     public List<Entrenador> obtenerEntrenadoresDisponibles() { return entrenadorRepository.findAll(); }
     public List<Nutricionista> obtenerNutricionistasDisponibles() { return nutricionistaRepository.findAll(); }
 }
