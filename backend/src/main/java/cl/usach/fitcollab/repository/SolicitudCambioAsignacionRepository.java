@@ -13,4 +13,8 @@ public interface SolicitudCambioAsignacionRepository
     List<SolicitudCambioAsignacion> findByDeportistaId(Long deportistaId);
 
     List<SolicitudCambioAsignacion> findByEstado(EstadoSolicitud estado);
+
+
+    //EXCEPCION 1 DEL CU-13 PARA VERIFICAR SI HAY SOLICITUDES PENDIENTES PARA UN ESPECIALISTA EN CONCRETO
+    boolean existsByDeportistaIdAndTipoEspecialistaAndEstado(Long deportistaId, String tipoEspecialista, EstadoSolicitud estado);
 }
