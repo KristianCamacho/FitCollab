@@ -49,6 +49,13 @@ const cerrarSesion = () => {
           Mis rutinas
         </RouterLink>
 
+        <RouterLink
+          v-if="usuario?.rol === 'DEPORTISTA'"
+          to="/calificar-rutina"
+        >
+          Calificar rutina
+        </RouterLink>
+
         <RouterLink v-if="usuario?.rol === 'DEPORTISTA'" to="/proponer-rutina">
           Proponer rutina
         </RouterLink>

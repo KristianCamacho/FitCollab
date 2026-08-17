@@ -20,6 +20,8 @@ import cl.usach.fitcollab.entities.Rutina;
 import cl.usach.fitcollab.services.RutinaService;
 import jakarta.validation.Valid;
 
+import cl.usach.fitcollab.dto.CalificarRutinaRequest;
+
 @RestController
 @RequestMapping("/api/rutinas")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -32,6 +34,23 @@ public class RutinaController {
     }
 
     @GetMapping
+    
+    @PostMapping("/{id}/calificacion")
+    public ResponseEntity<RutinaResponse> calificar(
+            @PathVariable Long id,
+            @Valid @RequestBody CalificarRutinaRequest request) {
+
+        Rutina rutinaCalificada =
+                rutinaService.calificarRutina(
+                        id,
+                        request.getCalificacion()
+                );
+
+        return ResponseEntity.ok(
+                new RutinaResponse(rutinaCalificada)
+        );
+    }
+
     public List<RutinaResponse> listar() {
         return rutinaService.obtenerTodas()
                 .stream()

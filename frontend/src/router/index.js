@@ -8,6 +8,7 @@ import LoginView from '../views/LoginView.vue'
 import InicioView from '../views/InicioView.vue'
 import PerfilView from '../views/PerfilView.vue'
 import MainLayout from '../layouts/MainLayout.vue'
+import CalificarRutinaView from '../views/CalificarRutinaView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -58,6 +59,13 @@ const router = createRouter({
           path: 'mis-rutinas',
           name: 'mis-rutinas',
           component: MisRutinasView,
+          meta: { rolesPermitidos: ['DEPORTISTA'] },
+        },
+
+        {
+          path: 'calificar-rutina',
+          name: 'calificar-rutina',
+          component: CalificarRutinaView,
           meta: { rolesPermitidos: ['DEPORTISTA'] },
         },
 

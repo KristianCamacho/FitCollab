@@ -61,6 +61,32 @@ public class RutinaService {
         return rutinaRepository.save(rutina);
     }
 
+    // CU-06: Calificar rutina
+    @Transactional
+    public Rutina calificarRutina(Long rutinaId, Integer calificacion) {
+
+        Rutina rutina = rutinaRepository.findById(rutinaId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "La rutina indicada no existe"));
+
+        if (rutina.getEstado() != EstadoRutina.REALIZADA) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Solo se pueden calificar rutinas realizadas");
+        }
+
+        if (rutina.getCalificacion() != 0) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Esta rutina ya fue calificada");
+        }
+
+        rutina.setCalificacion(calificacion);
+
+        return rutinaRepository.save(rutina);
+    }
+
     public List<Rutina> obtenerPorDeportista(Long deportistaId) {
         return rutinaRepository.findByDeportistaId(deportistaId);
     }
