@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cl.usach.fitcollab.entities.SolicitudCambioAsignacion;
 import cl.usach.fitcollab.services.SolicitudCambioAsignacionService;
+import cl.usach.fitcollab.dto.SolicitudCambioAsignacionResponse;
 
 @RestController
 @RequestMapping("/api/solicitudes-cambio")
@@ -32,7 +33,17 @@ public class SolicitudCambioAsignacionController {
 
             SolicitudCambioAsignacion nuevaSolicitud = solicitudService.crearSolicitudCambio(deportistaId, tipoEspecialista, motivo);
 
-            return ResponseEntity.ok(nuevaSolicitud);
+            SolicitudCambioAsignacionResponse respuesta =
+                    new SolicitudCambioAsignacionResponse(
+                            nuevaSolicitud.getId(),
+                            nuevaSolicitud.getDeportista().getId(),
+                            nuevaSolicitud.getTipoEspecialista(),
+                            nuevaSolicitud.getMotivo(),
+                            nuevaSolicitud.getEstado().name(),
+                            nuevaSolicitud.getFechaHora()
+                    );
+
+            return ResponseEntity.ok(respuesta);
         } catch (IllegalArgumentException | IllegalStateException e) {
             // ERROR 400 PARA SOLICITUD YA EXISTENTE O FORMULARIO VACIO
             return ResponseEntity.badRequest().body(e.getMessage());
