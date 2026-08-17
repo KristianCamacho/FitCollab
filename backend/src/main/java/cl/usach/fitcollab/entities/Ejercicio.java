@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -19,11 +21,17 @@ public class Ejercicio {
     private int repeticiones;
     private String notaTecnica;
 
+ 
+    @ManyToOne
+    @JoinColumn(name = "catalogo_ejercicio_id")
+    private CatalogoEjercicio catalogoEjercicio;
+
     public Ejercicio() {
     }
 
-    public Ejercicio(String nombre, int series, int repeticiones, String notaTecnica) {
-        this.nombre = nombre;
+    public Ejercicio(CatalogoEjercicio catalogoEjercicio, int series, int repeticiones, String notaTecnica) {
+        this.catalogoEjercicio = catalogoEjercicio;
+        this.nombre = catalogoEjercicio != null ? catalogoEjercicio.getNombre() : null;
         this.series = series;
         this.repeticiones = repeticiones;
         this.notaTecnica = notaTecnica;
@@ -67,5 +75,13 @@ public class Ejercicio {
 
     public void setNotaTecnica(String notaTecnica) {
         this.notaTecnica = notaTecnica;
+    }
+
+    public CatalogoEjercicio getCatalogoEjercicio() {
+        return catalogoEjercicio;
+    }
+
+    public void setCatalogoEjercicio(CatalogoEjercicio catalogoEjercicio) {
+        this.catalogoEjercicio = catalogoEjercicio;
     }
 }

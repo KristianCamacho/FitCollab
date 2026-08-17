@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -54,7 +55,7 @@ public class Rutina {
     private int disponibilidadTiempo;
     private int nivelCansancio;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Ejercicio> ejercicios = new ArrayList<>();
 
     public Rutina() {
