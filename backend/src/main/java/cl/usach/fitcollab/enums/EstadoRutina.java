@@ -1,5 +1,9 @@
 package cl.usach.fitcollab.enums;
 
 public enum EstadoRutina {
-    REALIZADA
+    ASIGNADA,                
+    PENDIENTE_VALIDACION,   
+    ACEPTADA,               
+    RECHAZADA,               
+    REALIZADA               
 }
