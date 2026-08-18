@@ -3,22 +3,19 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 import InicioView from '../views/InicioView.vue'
 import PerfilView from '../views/PerfilView.vue'
-
 import CrearRutinaView from '../views/CrearRutinaView.vue'
 import MisRutinasView from '../views/MisRutinasView.vue'
 import CalificarRutinaView from '../views/CalificarRutinaView.vue'
 import ProponerRutinaView from '../views/ProponerRutinaView.vue'
 import PropuestasRutinaView from '../views/PropuestasRutinaView.vue'
-
 import MiEspecialistaView from '../views/MiEspecialistaView.vue'
 import SolicitudesPendientesView from '../views/SolicitudesPendientesView.vue'
-
 import CrearDietaView from '../views/nutricionista/CrearDietaView.vue'
 import SolicitudesView from '../views/nutricionista/SolicitudesView.vue'
 import DietasView from '../views/nutricionista/DietasView.vue'
 import SolicitudDietaView from '../views/deportista/SolicitudDietaView.vue'
-
 import MainLayout from '../layouts/MainLayout.vue'
+import MisDietasView from '../views/deportista/MisDietasView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -153,6 +150,16 @@ const router = createRouter({
 
           meta: {
             rolesPermitidos: ['NUTRICIONISTA'],
+          },
+        },
+
+        {
+          path: 'deportista/dietas',
+          name: 'mis-dietas',
+          component: MisDietasView,
+
+          meta: {
+            rolesPermitidos: ['DEPORTISTA'],
           },
         },
 

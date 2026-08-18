@@ -16,6 +16,7 @@ public class SolicitudResponse {
     private String rutinaNombre;
     private Integer rutinaDuracionMin;
     private Long deportistaId;
+    private String deportistaNombre;
 
     public SolicitudResponse(SolicitudModificacion s) {
         this.id = s.getId();
@@ -24,6 +25,11 @@ public class SolicitudResponse {
         this.motivo = s.getMotivo();
         this.fechaHora = s.getFechaHora();
         this.tiempoDisponibleMin = s.getTiempoDisponibleMin();
+        this.deportistaId = s.getDeportista().getId();
+        this.deportistaNombre =
+                s.getDeportista().getNombre()
+                + " "
+                + s.getDeportista().getApellido();
 
         if (s.getRutina() != null) {
             this.rutinaId = s.getRutina().getId();
@@ -46,4 +52,5 @@ public class SolicitudResponse {
     public String getRutinaNombre() { return rutinaNombre; }
     public Integer getRutinaDuracionMin() { return rutinaDuracionMin; }
     public Long getDeportistaId() { return deportistaId; }
+    public String getDeportistaNombre() {return deportistaNombre;}
 }

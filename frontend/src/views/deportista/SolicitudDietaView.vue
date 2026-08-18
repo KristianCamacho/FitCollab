@@ -41,7 +41,7 @@ const enviarSolicitud = async () => {
 
   enviando.value = true
   try {
-    await api.post('/solicitudes/dieta', {
+    await api.post('/solicitudes-modificacion/dieta', {
       deportista: { id: usuario.id },
       dieta: { id: dietaSeleccionada.value },
       motivo: motivo.value,

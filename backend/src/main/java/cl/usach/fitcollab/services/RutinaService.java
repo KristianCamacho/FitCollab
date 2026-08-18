@@ -304,4 +304,25 @@ public class RutinaService {
         notificacion.setDestinatario(destinatario);
         notificacionRepository.save(notificacion);
     }
+
+    @Transactional
+    public Rutina marcarComoRealizada(Long rutinaId) {
+
+        Rutina rutina = rutinaRepository.findById(rutinaId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Rutina no encontrada"));
+
+        if (rutina.getEstado() != EstadoRutina.ACEPTADA
+                && rutina.getEstado() != EstadoRutina.ASIGNADA) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Solo una rutina asignada o aceptada puede marcarse como realizada");
+        }
+
+        rutina.setEstado(EstadoRutina.REALIZADA);
+
+        return rutinaRepository.save(rutina);
+    }
 }

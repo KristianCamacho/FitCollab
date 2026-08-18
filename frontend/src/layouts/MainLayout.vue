@@ -77,12 +77,16 @@ const cerrarSesion = () => {
             Proponer rutina
           </RouterLink>
 
-          <RouterLink to="/mi-especialista">
-            Mi equipo profesional
+          <RouterLink to="/deportista/dietas">
+            Mis dietas
           </RouterLink>
 
           <RouterLink to="/deportista/solicitud-dieta">
             Solicitar cambio de dieta
+          </RouterLink>
+
+          <RouterLink to="/mi-especialista">
+            Mi equipo profesional
           </RouterLink>
         </template>
 

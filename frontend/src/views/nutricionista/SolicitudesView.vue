@@ -10,7 +10,7 @@ const cargando = ref(false)
 const cargarSolicitudes = async () => {
   cargando.value = true
   try {
-    const respuesta = await api.get('/solicitudes/dieta/pendientes')
+    const respuesta = await api.get('/solicitudes-modificacion/dieta/pendientes')
     solicitudes.value = respuesta.data
   } catch (err) {
     error.value = 'No se pudieron cargar las solicitudes'
@@ -23,7 +23,7 @@ const responderSolicitud = async (id, estado) => {
   mensaje.value = ''
   error.value = ''
   try {
-    await api.put(`/solicitudes/${id}/responder`, { estado })
+    await api.put(`/solicitudes-modificacion/${id}/responder`, { estado })
     mensaje.value = `Solicitud ${estado === 'ACEPTADA' ? 'aprobada' : 'rechazada'} correctamente`
     await cargarSolicitudes()
   } catch (err) {

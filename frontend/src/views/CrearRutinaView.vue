@@ -262,8 +262,22 @@ select {
 .deportista {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   font-weight: normal;
+  margin: 0;
+  padding: 0.75rem 1rem;
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+
+  cursor: pointer;
+}
+
+.deportista input[type='checkbox'] {
+  width: auto;
+  margin: 0;
+  flex-shrink: 0;
 }
 
 .ejercicio {
