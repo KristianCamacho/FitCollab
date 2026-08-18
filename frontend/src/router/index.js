@@ -13,6 +13,11 @@ import PropuestasRutinaView from '../views/PropuestasRutinaView.vue'
 import MiEspecialistaView from '../views/MiEspecialistaView.vue'
 import SolicitudesPendientesView from '../views/SolicitudesPendientesView.vue'
 
+import CrearDietaView from '../views/nutricionista/CrearDietaView.vue'
+import SolicitudesView from '../views/nutricionista/SolicitudesView.vue'
+import DietasView from '../views/nutricionista/DietasView.vue'
+import SolicitudDietaView from '../views/deportista/SolicitudDietaView.vue'
+
 import MainLayout from '../layouts/MainLayout.vue'
 
 const router = createRouter({
@@ -118,6 +123,46 @@ const router = createRouter({
 
           meta: {
             rolesPermitidos: ['ADMINISTRADOR'],
+          },
+        },
+
+        {
+          path: 'nutricionista/dietas/crear',
+          name: 'crear-dieta',
+          component: CrearDietaView,
+
+          meta: {
+            rolesPermitidos: ['NUTRICIONISTA'],
+          },
+        },
+
+        {
+          path: 'nutricionista/solicitudes',
+          name: 'solicitudes-dieta',
+          component: SolicitudesView,
+
+          meta: {
+            rolesPermitidos: ['NUTRICIONISTA'],
+          },
+        },
+
+        {
+          path: 'nutricionista/dietas',
+          name: 'dietas',
+          component: DietasView,
+
+          meta: {
+            rolesPermitidos: ['NUTRICIONISTA'],
+          },
+        },
+
+        {
+          path: 'deportista/solicitud-dieta',
+          name: 'solicitud-dieta',
+          component: SolicitudDietaView,
+
+          meta: {
+            rolesPermitidos: ['DEPORTISTA'],
           },
         },
       ],

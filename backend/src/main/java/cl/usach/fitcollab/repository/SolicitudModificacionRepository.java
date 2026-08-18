@@ -17,7 +17,25 @@ public interface SolicitudModificacionRepository
 
     List<SolicitudModificacion> findByEstado(EstadoSolicitud estado);
 
-    // CU-10: verifica si ya existe una solicitud pendiente para esa rutina
+    // CU-10: verifica solicitud pendiente para una rutina
     boolean existsByRutinaIdAndTipoAndEstado(
-            Long rutinaId, TipoSolicitud tipo, EstadoSolicitud estado);
+            Long rutinaId,
+            TipoSolicitud tipo,
+            EstadoSolicitud estado
+    );
+
+    // CU-05 / CU-12: verifica solicitudes pendientes
+    // de un deportista para un tipo determinado
+    boolean existsByDeportistaIdAndTipoAndEstado(
+            Long deportistaId,
+            TipoSolicitud tipo,
+            EstadoSolicitud estado
+    );
+
+    // CU-05 / CU-12: obtener solicitudes
+    // por tipo y estado
+    List<SolicitudModificacion> findByTipoAndEstado(
+            TipoSolicitud tipo,
+            EstadoSolicitud estado
+    );
 }
