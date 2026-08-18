@@ -69,10 +69,15 @@ async function enviarCalificacion() {
   } catch (error) {
     tipoMensaje.value = 'error'
 
-    mensaje.value =
-      error.response?.data?.message ||
-      'Ocurrió un error al registrar la calificación'
-  } finally {
+    if (error.response?.status === 409) {
+      mensaje.value = 'Rutina ya calificada'
+    } else {
+      mensaje.value =
+        error.response?.data?.message ||
+        'Ocurrió un error al registrar la calificación'
+    }
+  }
+  finally {
     cargando.value = false
   }
 }
