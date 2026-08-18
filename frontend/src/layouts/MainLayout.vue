@@ -37,15 +37,24 @@ const cerrarSesion = () => {
           Perfil
         </RouterLink>
 
-        <RouterLink v-if="usuario?.rol === 'ENTRENADOR'" to="/crear-rutina">
+        <RouterLink
+          v-if="usuario?.rol === 'ENTRENADOR'"
+          to="/crear-rutina"
+        >
           Crear rutina
         </RouterLink>
 
-        <RouterLink v-if="usuario?.rol === 'ENTRENADOR'" to="/propuestas-rutina">
+        <RouterLink
+          v-if="usuario?.rol === 'ENTRENADOR'"
+          to="/propuestas-rutina"
+        >
           Rutinas propuestas
         </RouterLink>
 
-        <RouterLink v-if="usuario?.rol === 'DEPORTISTA'" to="/mis-rutinas">
+        <RouterLink
+          v-if="usuario?.rol === 'DEPORTISTA'"
+          to="/mis-rutinas"
+        >
           Mis rutinas
         </RouterLink>
 
@@ -56,8 +65,25 @@ const cerrarSesion = () => {
           Calificar rutina
         </RouterLink>
 
-        <RouterLink v-if="usuario?.rol === 'DEPORTISTA'" to="/proponer-rutina">
+        <RouterLink
+          v-if="usuario?.rol === 'DEPORTISTA'"
+          to="/proponer-rutina"
+        >
           Proponer rutina
+        </RouterLink>
+
+        <RouterLink
+          v-if="usuario?.rol === 'DEPORTISTA'"
+          to="/mi-especialista"
+        >
+          Mi equipo profesional
+        </RouterLink>
+
+        <RouterLink
+          v-if="usuario?.rol === 'ADMINISTRADOR'"
+          to="/admin/solicitudes"
+        >
+          Solicitudes de cambio
         </RouterLink>
       </nav>
 
@@ -198,6 +224,7 @@ const cerrarSesion = () => {
   .navegacion {
     margin-top: 20px;
     flex-direction: row;
+    flex-wrap: wrap;
   }
 
   .usuario {
