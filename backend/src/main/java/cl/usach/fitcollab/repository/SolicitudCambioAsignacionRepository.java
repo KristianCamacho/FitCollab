@@ -10,7 +10,17 @@ import cl.usach.fitcollab.enums.EstadoSolicitud;
 public interface SolicitudCambioAsignacionRepository
         extends JpaRepository<SolicitudCambioAsignacion, Long> {
 
-    List<SolicitudCambioAsignacion> findByDeportistaId(Long deportistaId);
+    List<SolicitudCambioAsignacion>
+            findByDeportistaId(Long deportistaId);
 
-    List<SolicitudCambioAsignacion> findByEstado(EstadoSolicitud estado);
+    List<SolicitudCambioAsignacion>
+            findByEstadoOrderByFechaHoraAsc(
+                    EstadoSolicitud estado
+            );
+
+    boolean existsByDeportistaIdAndTipoEspecialistaAndEstado(
+            Long deportistaId,
+            String tipoEspecialista,
+            EstadoSolicitud estado
+    );
 }

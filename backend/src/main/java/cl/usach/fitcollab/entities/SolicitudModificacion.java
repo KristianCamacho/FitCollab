@@ -31,6 +31,7 @@ public class SolicitudModificacion {
     private String motivo;
 
     private LocalDateTime fechaHora;
+    private Integer tiempoDisponibleMin; 
 
     @ManyToOne
     @JoinColumn(name = "deportista_id", nullable = false)
@@ -90,7 +91,12 @@ public class SolicitudModificacion {
     public void setFechaHora(LocalDateTime fechaHora) {
         this.fechaHora = fechaHora;
     }
-
+    public Integer getTiempoDisponibleMin() {
+        return tiempoDisponibleMin;
+     }
+     public void setTiempoDisponibleMin(Integer tiempoDisponibleMin) {
+         this.tiempoDisponibleMin = tiempoDisponibleMin;
+     }
     public Deportista getDeportista() {
         return deportista;
     }

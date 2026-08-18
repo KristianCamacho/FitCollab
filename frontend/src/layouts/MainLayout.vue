@@ -37,21 +37,65 @@ const cerrarSesion = () => {
           Perfil
         </RouterLink>
 
-        <RouterLink v-if="usuario?.rol === 'ENTRENADOR'" to="/crear-rutina">
-          Crear rutina
-        </RouterLink>
+        <!-- ENTRENADOR -->
+        <template v-if="usuario?.rol === 'ENTRENADOR'">
+          <RouterLink to="/crear-rutina">
+            Crear rutina
+          </RouterLink>
 
-        <RouterLink v-if="usuario?.rol === 'ENTRENADOR'" to="/propuestas-rutina">
-          Rutinas propuestas
-        </RouterLink>
+          <RouterLink to="/propuestas-rutina">
+            Rutinas propuestas
+          </RouterLink>
+        </template>
 
-        <RouterLink v-if="usuario?.rol === 'DEPORTISTA'" to="/mis-rutinas">
-          Mis rutinas
-        </RouterLink>
+        <!-- NUTRICIONISTA -->
+        <template v-if="usuario?.rol === 'NUTRICIONISTA'">
+          <RouterLink to="/nutricionista/dietas">
+            Mis planes alimenticios
+          </RouterLink>
 
-        <RouterLink v-if="usuario?.rol === 'DEPORTISTA'" to="/proponer-rutina">
-          Proponer rutina
-        </RouterLink>
+          <RouterLink to="/nutricionista/dietas/crear">
+            Crear plan alimenticio
+          </RouterLink>
+
+          <RouterLink to="/nutricionista/solicitudes">
+            Solicitudes pendientes
+          </RouterLink>
+        </template>
+
+        <!-- DEPORTISTA -->
+        <template v-if="usuario?.rol === 'DEPORTISTA'">
+          <RouterLink to="/mis-rutinas">
+            Mis rutinas
+          </RouterLink>
+
+          <RouterLink to="/calificar-rutina">
+            Calificar rutina
+          </RouterLink>
+
+          <RouterLink to="/proponer-rutina">
+            Proponer rutina
+          </RouterLink>
+
+          <RouterLink to="/deportista/dietas">
+            Mis dietas
+          </RouterLink>
+
+          <RouterLink to="/deportista/solicitud-dieta">
+            Solicitar cambio de dieta
+          </RouterLink>
+
+          <RouterLink to="/mi-especialista">
+            Mi equipo profesional
+          </RouterLink>
+        </template>
+
+        <!-- ADMINISTRADOR -->
+        <template v-if="usuario?.rol === 'ADMINISTRADOR'">
+          <RouterLink to="/admin/solicitudes">
+            Solicitudes de cambio
+          </RouterLink>
+        </template>
       </nav>
 
       <div class="usuario" v-if="usuario">
@@ -191,6 +235,7 @@ const cerrarSesion = () => {
   .navegacion {
     margin-top: 20px;
     flex-direction: row;
+    flex-wrap: wrap;
   }
 
   .usuario {

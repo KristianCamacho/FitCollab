@@ -1,199 +1,376 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { RouterLink } from 'vue-router'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import api from '@/services/api'
+
+const router = useRouter()
 
 const usuarioGuardado = localStorage.getItem('usuario')
 const usuario = usuarioGuardado ? JSON.parse(usuarioGuardado) : null
 
 const rutinas = ref([])
+const cargando = ref(false)
 const mensaje = ref('')
+const error = ref('')
 
-const etiquetasEstado = {
-  PENDIENTE_VALIDACION: 'Pendiente de validación',
-  ACEPTADA: 'Aceptada',
-  RECHAZADA: 'Rechazada',
-  ASIGNADA: 'Asignada',
-  REALIZADA: 'Realizada',
-}
+const cargarRutinas = async () => {
+  error.value = ''
 
-async function cargarRutinas() {
-  if (!usuario) return
+  if (!usuario) {
+    error.value = 'No hay un usuario autenticado'
+    return
+  }
+
+  cargando.value = true
 
   try {
-    const respuesta = await api.get(`/rutinas/deportista/${usuario.id}`)
+    const respuesta = await api.get(
+      `/rutinas/deportista/${usuario.id}`,
+    )
+
     rutinas.value = respuesta.data
-  } catch {
-    mensaje.value = 'No se pudieron cargar tus rutinas'
+  } catch (err) {
+    error.value = 'No se pudieron cargar tus rutinas'
+  } finally {
+    cargando.value = false
   }
+}
+
+const marcarComoRealizada = async (rutina) => {
+  mensaje.value = ''
+  error.value = ''
+
+  try {
+    await api.put(`/rutinas/${rutina.id}/realizada`)
+
+    await cargarRutinas()
+
+    mensaje.value = 'Rutina marcada como realizada'
+  } catch (err) {
+    if (typeof err.response?.data === 'string') {
+      error.value = err.response.data
+    } else {
+      error.value =
+        err.response?.data?.detail ||
+        err.response?.data?.message ||
+        'No se pudo marcar la rutina como realizada'
+    }
+  }
+}
+
+const textoEstado = (estado) => {
+  const textos = {
+    ASIGNADA: 'Asignada',
+    PENDIENTE_VALIDACION: 'Pendiente',
+    ACEPTADA: 'Aceptada',
+    RECHAZADA: 'Rechazada',
+    REALIZADA: 'Realizada',
+  }
+
+  return textos[estado] || estado
 }
 
 onMounted(cargarRutinas)
 </script>
 
 <template>
-  <div class="mis-rutinas">
-    <div class="encabezado">
-      <h2>Mis rutinas</h2>
-      <RouterLink class="proponer" to="/proponer-rutina">
+  <main class="rutinas-container">
+    <section class="encabezado">
+      <h1>Mis rutinas</h1>
+
+      <button
+        class="btn-proponer"
+        @click="router.push('/proponer-rutina')"
+      >
         + Proponer rutina
-      </RouterLink>
-    </div>
+      </button>
+    </section>
 
-    <p v-if="mensaje" class="error">{{ mensaje }}</p>
+    <p v-if="cargando">
+      Cargando rutinas...
+    </p>
 
-    <div v-if="rutinas.length" class="lista">
-      <article v-for="rutina in rutinas" :key="rutina.id" class="rutina">
-        <header>
-          <h3>{{ rutina.nombre }}</h3>
-          <span class="estado">
-            {{ etiquetasEstado[rutina.estado] || rutina.estado }}
-          </span>
-        </header>
+    <p
+      v-if="mensaje"
+      class="exito"
+    >
+      {{ mensaje }}
+    </p>
 
-        <p v-if="rutina.descripcion">{{ rutina.descripcion }}</p>
+    <p
+      v-if="error"
+      class="error"
+    >
+      {{ error }}
+    </p>
 
-        <p class="detalle">
-          {{ rutina.duracionMinutos }} min · Intensidad {{ rutina.intensidad }}
-          <span v-if="rutina.creadorNombre"> · Entrenador: {{ rutina.creadorNombre }}</span>
-        </p>
+    <p
+      v-if="
+        !cargando &&
+        !error &&
+        rutinas.length === 0
+      "
+    >
+      Aún no tienes rutinas asignadas.
+    </p>
 
-        <div v-if="rutina.ejercicios && rutina.ejercicios.length" class="ejercicios">
-          <h4>Ejercicios</h4>
-          <ul>
-            <li v-for="ejercicio in rutina.ejercicios" :key="ejercicio.id">
-              <span class="nombre-ejercicio">{{ ejercicio.nombre }}</span>
-              <span v-if="ejercicio.grupoMuscular" class="grupo-muscular">
-                ({{ ejercicio.grupoMuscular }})
-              </span>
-              <span class="series-reps">
-                {{ ejercicio.series }} series x {{ ejercicio.repeticiones }} repeticiones
-              </span>
-              <span v-if="ejercicio.notaTecnica" class="nota-tecnica">
-                {{ ejercicio.notaTecnica }}
-              </span>
-            </li>
-          </ul>
+    <article
+      v-for="rutina in rutinas"
+      :key="rutina.id"
+      class="tarjeta-rutina"
+    >
+      <div class="cabecera-rutina">
+        <h2>
+          {{ rutina.nombre }}
+        </h2>
+
+        <span
+          class="estado"
+          :class="`estado-${rutina.estado?.toLowerCase()}`"
+        >
+          {{ textoEstado(rutina.estado) }}
+        </span>
+      </div>
+
+      <p class="descripcion">
+        {{ rutina.descripcion }}
+      </p>
+
+      <p class="datos">
+        {{ rutina.duracionMinutos }} min
+        · Intensidad {{ rutina.intensidad }}
+        <template v-if="rutina.creadorNombre">
+          · Entrenador: {{ rutina.creadorNombre }}
+        </template>
+      </p>
+
+      <div
+        v-if="rutina.ejercicios?.length"
+        class="ejercicios"
+      >
+        <h3>Ejercicios</h3>
+
+        <div
+          v-for="ejercicio in rutina.ejercicios"
+          :key="ejercicio.id"
+          class="ejercicio"
+        >
+          <div>
+            <strong>
+              {{
+                ejercicio.nombre ||
+                ejercicio.ejercicioNombre ||
+                'Ejercicio'
+              }}
+            </strong>
+
+            <span
+              v-if="
+                ejercicio.grupoMuscular ||
+                ejercicio.ejercicioGrupoMuscular
+              "
+              class="grupo"
+            >
+              ({{
+                ejercicio.grupoMuscular ||
+                ejercicio.ejercicioGrupoMuscular
+              }})
+            </span>
+
+            <span class="series">
+              {{
+                ejercicio.series
+              }}
+              series x
+              {{
+                ejercicio.repeticiones
+              }}
+              repeticiones
+            </span>
+          </div>
+
+          <em
+            v-if="
+              ejercicio.notaTecnica ||
+              ejercicio.notaTecnicaSugerida
+            "
+          >
+            {{
+              ejercicio.notaTecnica ||
+              ejercicio.notaTecnicaSugerida
+            }}
+          </em>
         </div>
-      </article>
-    </div>
+      </div>
 
-    <p v-else-if="!mensaje">Aún no tienes rutinas asignadas</p>
-  </div>
+      <div
+        v-if="rutina.estado === 'ACEPTADA' ||rutina.estado === 'ASIGNADA'"
+        class="acciones"
+      >
+        <button
+          class="btn-realizada"
+          @click="marcarComoRealizada(rutina)"
+        >
+          Marcar como realizada
+        </button>
+      </div>
+
+      <p
+        v-if="
+          rutina.estado === 'REALIZADA' &&
+          rutina.calificacion > 0
+        "
+        class="calificacion"
+      >
+        Calificación: {{ rutina.calificacion }}/10
+      </p>
+    </article>
+  </main>
 </template>
 
 <style scoped>
-.mis-rutinas {
-  max-width: 720px;
+.rutinas-container {
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 1.5rem;
 }
 
 .encabezado {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  gap: 1rem;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 30px;
 }
 
-.proponer {
-  padding: 0.6rem 1rem;
-  background: #2c7be5;
-  color: #fff;
+.encabezado h1 {
+  margin: 0;
+  color: var(--color-primary);
+}
+
+.btn-proponer {
+  padding: 10px 18px;
+  border: none;
   border-radius: 6px;
-  white-space: nowrap;
+  background: #347ee8;
+  color: white;
+  cursor: pointer;
 }
 
-.lista {
+.tarjeta-rutina {
+  padding: 24px;
+  margin-bottom: 16px;
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-card);
+}
+
+.cabecera-rutina {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.rutina {
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-}
-
-.rutina header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.cabecera-rutina h2 {
+  margin: 0;
+  color: var(--color-primary);
 }
 
 .estado {
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  background: #eef4ff;
-  color: #2c7be5;
-  white-space: nowrap;
+  padding: 5px 12px;
+  border-radius: 18px;
+  background: #e8f1ff;
+  color: #1769d2;
+  font-size: 13px;
 }
 
-.detalle {
-  color: #666;
-  font-size: 0.9rem;
+.descripcion {
+  margin-top: 24px;
+}
+
+.datos {
+  color: var(--color-text-secondary);
 }
 
 .ejercicios {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid #eee;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-border);
 }
 
-.ejercicios h4 {
-  margin: 0 0 0.5rem;
-  font-size: 0.9rem;
-  color: #444;
+.ejercicios h3 {
+  margin: 0 0 14px;
+  font-size: 14px;
 }
 
-.ejercicios ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
+.ejercicio {
+  padding: 12px;
+  margin-bottom: 8px;
 
-.ejercicios li {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.4rem;
-  font-size: 0.9rem;
-  padding: 0.5rem;
-  background: #fafafa;
+  background: var(--color-background);
   border-radius: 6px;
 }
 
-.nombre-ejercicio {
+.grupo {
+  margin-left: 5px;
+  color: var(--color-text-secondary);
+}
+
+.series {
+  margin-left: 6px;
+  color: #1769d2;
   font-weight: 600;
 }
 
-.grupo-muscular {
-  color: #888;
-  font-size: 0.8rem;
+.ejercicio em {
+  display: block;
+  margin-top: 8px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
 }
 
-.series-reps {
-  color: #2c7be5;
-  font-weight: 500;
+.acciones {
+  margin-top: 18px;
 }
 
-.nota-tecnica {
-  width: 100%;
-  color: #777;
-  font-size: 0.8rem;
-  font-style: italic;
+.btn-realizada {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+
+  background: var(--color-primary);
+  color: white;
+
+  cursor: pointer;
+}
+
+.btn-realizada:hover {
+  opacity: 0.9;
+}
+
+.calificacion {
+  margin-top: 16px;
+  font-weight: 600;
+}
+
+.exito {
+  color: green;
 }
 
 .error {
-  color: #c62828;
-  font-weight: 600;
+  color: red;
+}
+
+@media (max-width: 700px) {
+  .encabezado {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .cabecera-rutina {
+    align-items: flex-start;
+  }
 }
 </style>

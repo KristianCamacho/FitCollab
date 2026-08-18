@@ -61,6 +61,32 @@ public class RutinaService {
         return rutinaRepository.save(rutina);
     }
 
+    // CU-06: Calificar rutina
+    @Transactional
+    public Rutina calificarRutina(Long rutinaId, Integer calificacion) {
+
+        Rutina rutina = rutinaRepository.findById(rutinaId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "La rutina indicada no existe"));
+
+        if (rutina.getEstado() != EstadoRutina.REALIZADA) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Solo se pueden calificar rutinas realizadas");
+        }
+
+        if (rutina.getCalificacion() != 0) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Esta rutina ya fue calificada");
+        }
+
+        rutina.setCalificacion(calificacion);
+
+        return rutinaRepository.save(rutina);
+    }
+
     public List<Rutina> obtenerPorDeportista(Long deportistaId) {
         return rutinaRepository.findByDeportistaId(deportistaId);
     }
@@ -277,5 +303,26 @@ public class RutinaService {
         notificacion.setFechaHora(LocalDateTime.now());
         notificacion.setDestinatario(destinatario);
         notificacionRepository.save(notificacion);
+    }
+
+    @Transactional
+    public Rutina marcarComoRealizada(Long rutinaId) {
+
+        Rutina rutina = rutinaRepository.findById(rutinaId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Rutina no encontrada"));
+
+        if (rutina.getEstado() != EstadoRutina.ACEPTADA
+                && rutina.getEstado() != EstadoRutina.ASIGNADA) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Solo una rutina asignada o aceptada puede marcarse como realizada");
+        }
+
+        rutina.setEstado(EstadoRutina.REALIZADA);
+
+        return rutinaRepository.save(rutina);
     }
 }

@@ -3,6 +3,7 @@ package cl.usach.fitcollab.entities;
 import java.time.LocalDateTime;
 
 import cl.usach.fitcollab.enums.EstadoSolicitud;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -24,6 +25,7 @@ public class SolicitudCambioAsignacion {
     @Enumerated(EnumType.STRING)
     private EstadoSolicitud estado;
 
+    @Column(nullable = false, length = 500)
     private String motivo;
 
     private LocalDateTime fechaHora;
@@ -31,6 +33,16 @@ public class SolicitudCambioAsignacion {
     @ManyToOne
     @JoinColumn(name = "deportista_id", nullable = false)
     private Deportista deportista;
+
+    @Column(name = "justificacion_rechazo", length = 500)
+    private String justificacionRechazo;
+
+    @Column(
+            name = "tipo_especialista",
+            nullable = false,
+            length = 30
+    )
+    private String tipoEspecialista;
 
     public SolicitudCambioAsignacion() {
     }
@@ -73,5 +85,23 @@ public class SolicitudCambioAsignacion {
 
     public void setDeportista(Deportista deportista) {
         this.deportista = deportista;
+    }
+
+    public String getJustificacionRechazo() {
+        return justificacionRechazo;
+    }
+
+    public void setJustificacionRechazo(
+            String justificacionRechazo) {
+
+        this.justificacionRechazo = justificacionRechazo;
+    }
+
+    public String getTipoEspecialista() {
+        return tipoEspecialista;
+    }
+
+    public void setTipoEspecialista(String tipoEspecialista) {
+        this.tipoEspecialista = tipoEspecialista;
     }
 }

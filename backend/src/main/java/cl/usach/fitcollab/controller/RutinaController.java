@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import cl.usach.fitcollab.dto.CrearRutinaRequest;
 import cl.usach.fitcollab.dto.ProponerRutinaRequest;
 import cl.usach.fitcollab.dto.RutinaResponse;
 import cl.usach.fitcollab.entities.Rutina;
 import cl.usach.fitcollab.services.RutinaService;
 import jakarta.validation.Valid;
+import cl.usach.fitcollab.dto.CalificarRutinaRequest;
 
 @RestController
 @RequestMapping("/api/rutinas")
@@ -29,6 +29,33 @@ public class RutinaController {
 
     public RutinaController(RutinaService rutinaService) {
         this.rutinaService = rutinaService;
+    }
+ 
+    @PostMapping("/{id}/calificacion")
+    public ResponseEntity<RutinaResponse> calificar(
+            @PathVariable Long id,
+            @Valid @RequestBody CalificarRutinaRequest request) {
+
+        Rutina rutinaCalificada =
+                rutinaService.calificarRutina(
+                        id,
+                        request.getCalificacion()
+                );
+
+        return ResponseEntity.ok(
+                new RutinaResponse(rutinaCalificada)
+        );
+    }
+
+    @PutMapping("/{id}/realizada")
+    public ResponseEntity<RutinaResponse> marcarComoRealizada(
+            @PathVariable Long id) {
+
+        Rutina rutina =
+                rutinaService.marcarComoRealizada(id);
+
+        return ResponseEntity.ok(
+                new RutinaResponse(rutina));
     }
 
     @GetMapping
